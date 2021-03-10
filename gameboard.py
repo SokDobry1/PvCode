@@ -20,7 +20,7 @@ class Tile:
 
 class Board:
     def create_board(self):
-        _size = (self.x1 - self.x0) // (self.k_tiles + (self.k_tiles + 1) * 0.1)
+        _size = (self.x1 - self.x0) / (self.k_tiles + (self.k_tiles + 1) * 0.1)
         _indent = _size * 0.1
         self.board_objects = []
         for i in range(self.k_tiles):
@@ -45,14 +45,18 @@ class Board:
 
         c.create_rectangle(self.x0, self.y0, self.x1, self.y1, 
                            fill = "lawn green", outline = "white", width=5)
+
+        _delta = 3
+        self.x0 += _delta; self.y0 += _delta; self.x1 -= _delta; self.y1 -= _delta
+        
         self.create_board()
 
 
 def main():
 
 
-    k_tiles = 10
-    screen_width = 768; screen_height = 1000
+    k_tiles = 15
+    screen_width = 1080; screen_height = 768
 
     window = Tk() #Создаем канвас
     window.title("PvCode")
