@@ -1,20 +1,20 @@
 from tkinter import *
 from draw_images import *
+from random import randint
 
 class Tile:
     def update_tile(self, status):
-        statuses = {"clear": clear_tile}
+        statuses = {"clear": clear_tile, "base": draw_base}
         if status != self.status:
-            if self.number != None:
-                c.delete(self.number)
+            if self.c_id != None:
+                for i in self.c_id:
+                    self.c.delete(i)
             self.status = status
-            self.number = statuses[status](self.c, self.x0, self.y0, self.size)
+            self.c_id = statuses[status](self.c, self.x0, self.y0, self.size)
 
     def __init__(self, c, x0, y0, size):
-        self.x0 = x0; self.y0 = y0; self.size = size
-        self.c = c
-        self.status = None
-        self.number = None
+        self.x0 = x0; self.y0 = y0; self.size = size; self.c = c
+        self.status = None; self.c_id = None
         self.update_tile("clear")
 
 
@@ -53,10 +53,8 @@ class Board:
 
 
 def main():
-
-
     k_tiles = 15
-    screen_width = 1080; screen_height = 768
+    screen_width = 1000; screen_height = 768
 
     window = Tk() #Создаем канвас
     window.title("PvCode")
@@ -64,7 +62,8 @@ def main():
     c.pack()
 
     board = Board(c, k_tiles, screen_width, screen_height)
-
+    
+    window.after(1000, lambda: board.board_objects[randint(0, k_tiles - 1)][randint(0, k_tiles - 1)].update_tile("base"))
     window.mainloop()
 
 main()
