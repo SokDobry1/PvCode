@@ -4,7 +4,8 @@ from random import randint
 
 class Tile:
     def update_tile(self, status):
-        statuses = {"clear": clear_tile, "base": draw_base}
+        statuses = {"void": draw_void, "base": draw_base,
+        "carryer": draw_carryer}
         if status != self.status:
             if self.c_id != None:
                 for i in self.c_id:
@@ -15,21 +16,21 @@ class Tile:
     def __init__(self, c, x0, y0, size):
         self.x0 = x0; self.y0 = y0; self.size = size; self.c = c
         self.status = None; self.c_id = None
-        self.update_tile("clear")
+        self.update_tile("void")
 
 
 class Board:
     def create_board(self):
         _size = (self.x1 - self.x0) / (self.k_tiles + (self.k_tiles + 1) * 0.1)
         _indent = _size * 0.1
-        self.board_objects = []
+        self.objects = []
         for i in range(self.k_tiles):
             _line = []
             for j in range(self.k_tiles):
                 pos_x = self.x0 + _indent + (_size + _indent) * j
                 pos_y = self.y0 + _indent + (_size + _indent) * i
                 _line += [Tile(self.c, pos_x, pos_y, _size)]
-            self.board_objects += [_line]
+            self.objects += [_line]
 
     
     def __init__(self, c, k_tiles, 
@@ -51,10 +52,16 @@ class Board:
         
         self.create_board()
 
+    def update_object(self, i, j, status):
+        self.objects[i][j].update_tile(status)
+
+    def get_status(self, i, j):
+        return self.objects[i][j].status
+
 
 def main():
     k_tiles = 15
-    screen_width = 1000; screen_height = 768
+    screen_width = 1080; screen_height = 768
 
     window = Tk() #Создаем канвас
     window.title("PvCode")
@@ -63,7 +70,8 @@ def main():
 
     board = Board(c, k_tiles, screen_width, screen_height)
     
-    window.after(1000, lambda: board.board_objects[randint(0, k_tiles - 1)][randint(0, k_tiles - 1)].update_tile("base"))
+    window.after(1000, lambda: board.update_object(randint(0, k_tiles - 1), randint(0, k_tiles - 1), "base"))
+    window.after(2000, lambda: board.update_object(randint(0, k_tiles - 1), randint(0, k_tiles - 1), "carryer"))
     window.mainloop()
 
 main()
